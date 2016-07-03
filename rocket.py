@@ -10,7 +10,7 @@ import subprocess
 
 # Pin Definitons:
 ledPin = 17 # Broadcom pin 23 (P1 pin 16)
-
+GPIO_Configured = False
 
 def setup():
     # Pin Setup:
@@ -18,7 +18,13 @@ def setup():
     GPIO.setup(ledPin, GPIO.OUT) # LED pin set as output
     # Initial state for LEDs:
     GPIO.output(ledPin, GPIO.LOW)
+    GPIO_Configured = True
 
+def teardown():
+    # release our GPIO config
+    if GPIO_Configured:
+        GPIO.cleanup() # cleanup all GPIO
+    
 def poweroff():
     command = "/usr/bin/sudo /sbin/shutdown  now"
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
@@ -46,6 +52,7 @@ try:
     if not isCameraConnected():
         exit(0)
     setup()
+    
     # make folder based on datestamp
     directory = '/home/pi/Videos/' + time.strftime("%Y-%m-%d")
     print("Saving videos to " + directory)
@@ -73,7 +80,7 @@ try:
 
     # power off the system
     print("Capture complete, powering down")
-#    poweroff()
+    poweroff()
 finally:
-    GPIO.cleanup() # cleanup all GPIO
+    teardown()
             
