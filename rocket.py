@@ -4,9 +4,10 @@
 import RPi.GPIO as GPIO
 import time
 import datetime
-import  picamera 
+import  picamera
 import os
 import subprocess
+import GpsController
 
 # Pin Definitons:
 ledPin = 17 # Broadcom pin 23 (P1 pin 16)
@@ -19,12 +20,19 @@ def setup():
     # Initial state for LEDs:
     GPIO.output(ledPin, GPIO.LOW)
     GPIO_Configured = True
+    # create the GPS controller
+    gpsc = GpsController()
+
 
 def teardown():
+    # print "Stopping gps controller"
+    # gpsc.stopController()
+    #wait for the thread to finish
+    gpsc.join()
     # release our GPIO config
     if GPIO_Configured:
         GPIO.cleanup() # cleanup all GPIO
-    
+
 def poweroff():
     command = "/usr/bin/sudo /sbin/shutdown  now"
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
@@ -47,23 +55,46 @@ def isCameraConnected():
     if "detected=1" in output:
         return True
     return False
-    
-try:
-    if not isCameraConnected():
-        exit(0)
-    setup()
-    
-    # make folder based on datestamp
+
+########################################################
+
+def getDataFolder():
     directory = '/home/pi/Videos/' + time.strftime("%Y-%m-%d")
     print("Saving videos to " + directory)
     if not os.path.exists(directory):
         print("Making folder " + directory)
         os.makedirs(directory)
+    return directory
+
+def wait_for_gps():
+    while gpsc.waiting_for_fix
+        ledOn();
+        time.sleep(0.5)
+        ledOff();
+        time.sleep(0.5)
+
+try:
+    if not isCameraConnected():
+        exit(0)
+    setup()
+
+    # make folder based on datestamp
+    directory = getDataFolder()
 
     video_file = directory + "/flight-" + time.strftime("%H-%M-%S") + ".h264"
     print("Video file is " + video_file);
+
+    # start GPS controller
+    gpsc.start()
+
+    # wait for GPS fix
+    wait_for_gps()
+
     # turn on led
     ledOn()
+
+    # start GPS capture
+
     # capture video for 2 minutes to that folder
     with picamera.PiCamera() as camera:
         # Camera warm-up time
@@ -74,7 +105,7 @@ try:
         # stop capture
         camera.stop_recording()
         print("Capture complete")
-        
+
     # turn off led
     ledOff()
 
@@ -83,4 +114,3 @@ try:
     poweroff()
 finally:
     teardown()
-            

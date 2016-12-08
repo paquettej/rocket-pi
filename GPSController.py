@@ -30,6 +30,10 @@ class GpsController(threading.Thread):
     def satellites(self):
         return self.gpsd.satellites
 
+    @property
+    def waiting_for_fix
+        return not self.fix.latitude
+
 if __name__ == '__main__':
     # create the controller
     gpsc = GpsController()
