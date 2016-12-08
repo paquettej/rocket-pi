@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 
 # External module imports
@@ -7,11 +8,12 @@ import datetime
 import  picamera
 import os
 import subprocess
-import GPSController
+from GpsController import *
 
 # Pin Definitons:
 ledPin = 17 # Broadcom pin 23 (P1 pin 16)
 GPIO_Configured = False
+gpsc = None
 
 def setup():
     # Pin Setup:
@@ -20,15 +22,9 @@ def setup():
     # Initial state for LEDs:
     GPIO.output(ledPin, GPIO.LOW)
     GPIO_Configured = True
-    # create the GPS controller
-    gpsc = GpsController()
 
 
 def teardown():
-    # print "Stopping gps controller"
-    # gpsc.stopController()
-    #wait for the thread to finish
-#    gpsc.join()
     # release our GPIO config
     if GPIO_Configured:
         GPIO.cleanup() # cleanup all GPIO
@@ -67,33 +63,38 @@ def getDataFolder():
     return directory
 
 def wait_for_gps():
-    while gpsc.waiting_for_fix():
+    no_fix = gpsc.waiting_for_fix()
+    while no_fix:
         ledOn();
         time.sleep(0.5)
         ledOff();
         time.sleep(0.5)
+        no_fix = gpsc.waiting_for_fix()
 
 try:
     if not isCameraConnected():
         exit(0)
     setup()
+    # create the GPS controller
+    gpsc = GpsController()
 
     # make folder based on datestamp
     directory = getDataFolder()
 
     current_timestamp = time.strftime("%H-%M-%S")
     video_file = directory + "/flight-" + current_timestamp + ".h264"
-    print("Video file is " + video_file);
+    print("Video file is " + video_file)
 
     gps_file = directory +  "/flight-" + current_timestamp + ".gps.csv"
-    print("GPS data file is " + gps_file);
+    print("GPS data file is " + gps_file)
+
     gpsc.set_datafile(gps_file)
 
     # start GPS controller
     gpsc.start()
 
     # wait for GPS fix
-    wait_for_gps()
+#    wait_for_gps()
 
     # turn on led
     ledOn()
@@ -106,7 +107,7 @@ try:
         time.sleep(2)
         camera.start_recording(video_file, format='h264', );
         print("Capture started")
-        camera.wait_recording(2 * 60)
+        camera.wait_recording(30)#(2 * 60)
         # stop capture
         camera.stop_recording()
         print("Capture complete")
@@ -116,6 +117,6 @@ try:
 
     # power off the system
     print("Capture complete, powering down")
-    poweroff()
+#    poweroff()
 finally:
     teardown()
