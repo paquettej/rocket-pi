@@ -28,7 +28,7 @@ def teardown():
     # print "Stopping gps controller"
     # gpsc.stopController()
     #wait for the thread to finish
-    gpsc.join()
+#    gpsc.join()
     # release our GPIO config
     if GPIO_Configured:
         GPIO.cleanup() # cleanup all GPIO
