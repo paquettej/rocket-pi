@@ -7,7 +7,7 @@ import datetime
 import  picamera
 import os
 import subprocess
-import GpsController
+import GPSController
 
 # Pin Definitons:
 ledPin = 17 # Broadcom pin 23 (P1 pin 16)
