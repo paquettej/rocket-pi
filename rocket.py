@@ -67,7 +67,7 @@ def getDataFolder():
     return directory
 
 def wait_for_gps():
-    while gpsc.waiting_for_fix
+    while gpsc.waiting_for_fix()
         ledOn();
         time.sleep(0.5)
         ledOff();
