@@ -81,8 +81,13 @@ try:
     # make folder based on datestamp
     directory = getDataFolder()
 
-    video_file = directory + "/flight-" + time.strftime("%H-%M-%S") + ".h264"
+    current_timestamp = time.strftime("%H-%M-%S")
+    video_file = directory + "/flight-" + current_timestamp + ".h264"
     print("Video file is " + video_file);
+
+    gps_file = directory +  "/flight-" + current_timestamp + ".gps.csv"
+    print("GPS data file is " + gps_file);
+    gpsc.set_datafile(gps_file)
 
     # start GPS controller
     gpsc.start()
