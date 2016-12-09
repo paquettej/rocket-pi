@@ -1,4 +1,3 @@
-
 #!/usr/bin/python
 
 # External module imports
@@ -8,12 +7,15 @@ import datetime
 import  picamera
 import os
 import subprocess
-from GpsController import *
+#from GpsController import *
+import serial
+import threading
 
 # Pin Definitons:
 ledPin = 17 # Broadcom pin 23 (P1 pin 16)
 GPIO_Configured = False
 gpsc = None
+data_file_name = None
 
 def setup():
     # Pin Setup:
@@ -62,21 +64,34 @@ def getDataFolder():
         os.makedirs(directory)
     return directory
 
-def wait_for_gps():
-    no_fix = gpsc.waiting_for_fix()
-    while no_fix:
-        ledOn();
-        time.sleep(0.5)
-        ledOff();
-        time.sleep(0.5)
-        no_fix = gpsc.waiting_for_fix()
+# def wait_for_gps():
+#     no_fix = gpsc.waiting_for_fix()
+#     while no_fix:
+#         ledOn();
+#         time.sleep(0.5)
+#         ledOff();
+#         time.sleep(0.5)
+#         no_fix = gpsc.waiting_for_fix()
 
+
+def acquire():
+        with open(data_file_name, "ab") as datafile:
+            with serial.Serial("/dev/ttyAMA0", 115200) as port:
+                while True:
+                    try:
+                        line = port.readline()
+                        datafile.write(line)
+                        datafile.flush()
+                    except Exception as e:
+                        continue
+        
+        
 try:
     if not isCameraConnected():
         exit(0)
     setup()
     # create the GPS controller
-    gpsc = GpsController()
+##    gpsc = GpsController()
 
     # make folder based on datestamp
     directory = getDataFolder()
@@ -87,36 +102,47 @@ try:
 
     gps_file = directory +  "/flight-" + current_timestamp + ".gps.csv"
     print("GPS data file is " + gps_file)
+    data_file_name = gps_file
 
-    gpsc.set_datafile(gps_file)
+    
+##    gpsc.set_datafile(gps_file)
 
     # start GPS controller
-    gpsc.start()
+##    gpsc.start()
 
     # wait for GPS fix
-#    wait_for_gps()
+##    wait_for_gps()
 
     # turn on led
     ledOn()
 
+    acquire_data = threading.Event()
     # start GPS capture
+    acquisition_thread = threading.Thread(name='gps_acquisition', target=acquire)
+    acquisition_thread.setDaemon(True)
 
+    acquisition_thread.start()
+    
     # capture video for 2 minutes to that folder
     with picamera.PiCamera() as camera:
         # Camera warm-up time
         time.sleep(2)
         camera.start_recording(video_file, format='h264', );
         print("Capture started")
-        camera.wait_recording(30)#(2 * 60)
+        camera.wait_recording(2 * 60)
         # stop capture
         camera.stop_recording()
         print("Capture complete")
 
+ #   acquire_data.set()
     # turn off led
     ledOff()
 
+#    print "Waiting for acquisition thread to shutdown"
+#    acquisition_thread.join()
+
     # power off the system
     print("Capture complete, powering down")
-#    poweroff()
+    poweroff()
 finally:
     teardown()
