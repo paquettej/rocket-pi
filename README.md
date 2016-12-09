@@ -5,6 +5,12 @@ Ever want to capture video from a model rocket? With the new low-cost Raspberry 
 Properly configured, this script will run when you boot your Pi. If it detects that the camera is attached, it will 
 turn on the LED attached to GPIO pin 17 and begin recording. It will record for 2 minutes, stop capture and power off the Pi.
 
+The initial version of this project just captured video and stored it in the Videos folder of the current user. With this verison,
+GPS data is captured as well.
+
+We weren't able to get gpsd to work reliably, so we just capture the raw NMEA data from the serial port which is why the script 
+must be run via ```sudo```.
+
 ## Parts list
 
 -  ![Adafruit Ultimate GPS Breakout - 66 channel w/10 Hz updates - Version 3](https://www.adafruit.com/products/746)
