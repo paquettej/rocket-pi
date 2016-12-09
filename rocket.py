@@ -1,20 +1,20 @@
 #!/usr/bin/python
 
 # External module imports
-import RPi.GPIO as GPIO
 import time
 import datetime
-import  picamera
 import os
 import subprocess
-#from GpsController import *
 import serial
 import threading
+
+# rPi support 
+import RPi.GPIO as GPIO
+import picamera
 
 # Pin Definitons:
 ledPin = 17 # Broadcom pin 23 (P1 pin 16)
 GPIO_Configured = False
-gpsc = None
 data_file_name = None
 
 def setup():
@@ -54,7 +54,6 @@ def isCameraConnected():
         return True
     return False
 
-########################################################
 
 def getDataFolder():
     directory = '/home/pi/Videos/' + time.strftime("%Y-%m-%d")
@@ -64,34 +63,23 @@ def getDataFolder():
         os.makedirs(directory)
     return directory
 
-# def wait_for_gps():
-#     no_fix = gpsc.waiting_for_fix()
-#     while no_fix:
-#         ledOn();
-#         time.sleep(0.5)
-#         ledOff();
-#         time.sleep(0.5)
-#         no_fix = gpsc.waiting_for_fix()
-
 
 def acquire():
-        with open(data_file_name, "ab") as datafile:
-            with serial.Serial("/dev/ttyAMA0", 115200) as port:
-                while True:
-                    try:
-                        line = port.readline()
-                        datafile.write(line)
-                        datafile.flush()
-                    except Exception as e:
-                        continue
-        
-        
+    with open(data_file_name, "ab") as datafile:
+        with serial.Serial("/dev/ttyAMA0", 115200) as port:
+            while True:
+                try:
+                    line = port.readline()
+                    datafile.write(line)
+                    datafile.flush()
+                except Exception as e:
+                    continue
+
 try:
     if not isCameraConnected():
         exit(0)
+
     setup()
-    # create the GPS controller
-##    gpsc = GpsController()
 
     # make folder based on datestamp
     directory = getDataFolder()
@@ -103,15 +91,6 @@ try:
     gps_file = directory +  "/flight-" + current_timestamp + ".gps.csv"
     print("GPS data file is " + gps_file)
     data_file_name = gps_file
-
-    
-##    gpsc.set_datafile(gps_file)
-
-    # start GPS controller
-##    gpsc.start()
-
-    # wait for GPS fix
-##    wait_for_gps()
 
     # turn on led
     ledOn()
@@ -134,12 +113,8 @@ try:
         camera.stop_recording()
         print("Capture complete")
 
- #   acquire_data.set()
     # turn off led
     ledOff()
-
-#    print "Waiting for acquisition thread to shutdown"
-#    acquisition_thread.join()
 
     # power off the system
     print("Capture complete, powering down")
