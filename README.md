@@ -13,12 +13,12 @@ must be run via ```sudo```.
 
 ## Parts list
 
--  ![Adafruit Ultimate GPS Breakout - 66 channel w/10 Hz updates - Version 3](https://www.adafruit.com/products/746)
--  ![PowerBoost 500 Basic - 5V USB Boost @ 500mA from 1.8V+](https://www.adafruit.com/products/1903)
--  ![Raspberry Pi Camera Board v2 - 8 Megapixels](https://www.adafruit.com/products/3099)
--  ![Raspberry Pi Zero v1.3 Camera Cable](https://www.adafruit.com/products/3157)
--  ![Lithium Ion Battery - 3.7v 2000mAh](https://www.adafruit.com/products/2011)
--  ![Raspberry Pi Zero - Version v1.3](https://www.adafruit.com/products/2885)
+-  [Adafruit Ultimate GPS Breakout - 66 channel w/10 Hz updates - Version 3] (https://www.adafruit.com/products/746)
+-  [PowerBoost 500 Basic - 5V USB Boost @ 500mA from 1.8V+](https://www.adafruit.com/products/1903)
+-  [Raspberry Pi Camera Board v2 - 8 Megapixels](https://www.adafruit.com/products/3099)
+-  [Raspberry Pi Zero v1.3 Camera Cable](https://www.adafruit.com/products/3157)
+-  [Lithium Ion Battery - 3.7v 2000mAh](https://www.adafruit.com/products/2011)
+-  [Raspberry Pi Zero - Version v1.3](https://www.adafruit.com/products/2885)
 
 ## Configuration
 Clone this repo on your Pi.
@@ -29,4 +29,4 @@ Edit your .bashrc to run rocket.py. This should be the last line -- and you'll n
 
 ## Amateur-ish Fritzing Diagrams
 ![schematic](https://github.com/snowmoonsoftware/rocket-pi/blob/master/images/RocketPi_schematic.png)
-![breadboard](https://github.com/snowmoonsoftware/rocket-pi/blob/master/images/RocketPi_bb.png)
+
