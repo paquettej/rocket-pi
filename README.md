@@ -28,5 +28,5 @@ Edit your .bashrc to run rocket.py. This should be the last line -- and you'll n
 
 
 ## Amateur-ish Fritzing Diagrams
-![schematic](https://github.com/snowmoonsoftware/rocket-pi/blob/master/images/RocketPi_schematic.png)
+![schematic](https://github.com/snowmoonsoftware/rocket-pi/blob/main/images/RocketPi_schematic.png)
 
