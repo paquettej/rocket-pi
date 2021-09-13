@@ -13,7 +13,7 @@ must be run via ```sudo```.
 
 ## Parts list
 
--  [Adafruit Ultimate GPS Breakout - 66 channel w/10 Hz updates - Version 3] (https://www.adafruit.com/products/746)
+-  [Adafruit Ultimate GPS Breakout - 66 channel w/10 Hz updates - Version 3](https://www.adafruit.com/products/746)
 -  [PowerBoost 500 Basic - 5V USB Boost @ 500mA from 1.8V+](https://www.adafruit.com/products/1903)
 -  [Raspberry Pi Camera Board v2 - 8 Megapixels](https://www.adafruit.com/products/3099)
 -  [Raspberry Pi Zero v1.3 Camera Cable](https://www.adafruit.com/products/3157)
