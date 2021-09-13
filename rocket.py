@@ -14,48 +14,50 @@ import picamera
 
 # Pin Definitons:
 ledPin = 17 # Broadcom pin 23 (P1 pin 16)
-GPIO_Configured = False
+gpio_configured = False
 data_file_name = None
 
 def setup():
+    global gpio_configured
     # Pin Setup:
     GPIO.setmode(GPIO.BCM) # Broadcom pin-numbering scheme
     GPIO.setup(ledPin, GPIO.OUT) # LED pin set as output
     # Initial state for LEDs:
     GPIO.output(ledPin, GPIO.LOW)
-    GPIO_Configured = True
+
+    gpio_configured = True
 
 
 def teardown():
     # release our GPIO config
-    if GPIO_Configured:
+    if gpio_configured:
         GPIO.cleanup() # cleanup all GPIO
 
 def poweroff():
     command = "/usr/bin/sudo /sbin/shutdown  now"
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    print output
+    print(output)
 
-def ledOn():
+def turn_led_on():
     GPIO.output(ledPin, GPIO.HIGH)
 
-def ledOff():
+def turn_led_off():
     GPIO.output(ledPin, GPIO.LOW)
 
-def isCameraConnected():
+def is_camera_connected():
     # check if camera connected
     print("checking for camera")
     cmd = "/usr/bin/vcgencmd get_camera"
     process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
     output = process.communicate()[0]
-    print output
+    print(output)
     if "detected=1" in output:
         return True
     return False
 
 
-def getDataFolder():
+def create_video_output_folder():
     directory = '/home/pi/Videos/' + time.strftime("%Y-%m-%d")
     print("Saving videos to " + directory)
     if not os.path.exists(directory):
@@ -76,13 +78,13 @@ def acquire():
                     continue
 
 try:
-    if not isCameraConnected():
+    if not is_camera_connected():
         exit(0)
 
     setup()
 
     # make folder based on datestamp
-    directory = getDataFolder()
+    directory = create_video_output_folder()
 
     current_timestamp = time.strftime("%H-%M-%S")
     video_file = directory + "/flight-" + current_timestamp + ".h264"
@@ -93,7 +95,7 @@ try:
     data_file_name = gps_file
 
     # turn on led
-    ledOn()
+    turn_led_on()
 
     acquire_data = threading.Event()
     # start GPS capture
@@ -114,7 +116,7 @@ try:
         print("Capture complete")
 
     # turn off led
-    ledOff()
+    turn_led_off()
 
     # power off the system
     print("Capture complete, powering down")
